@@ -1,4 +1,32 @@
 
+var blacklistArray = [
+  "cdn.krxd.net",
+  "google-analytics",
+  "www.gstatic.com",
+  "effectivemeasure",
+  "googletagservice"
+];
+
+function init(){
+  var blacklist = get_blacklist();
+  for (var i = 0; i < blacklistArray.length; i++){
+    if (!blacklist.includes(blacklistArray[i])){
+        blacklist.push(blacklistArray[i]);
+    }
+  }
+  localStorage.setItem('blacklist', JSON.stringify(blacklist));
+    console.log(blacklist);
+}
+
+function get_blacklist() {
+    var todos = new Array;
+    var todos_str = localStorage.getItem('blacklist');
+    if (todos_str !== null) {
+        todos = JSON.parse(todos_str);
+    }
+    return todos;
+}
+
 function onrequest(req) {
   // This function will be called everytime the browser is about to send out an http or https request.
   // The req variable contains all information about the request.
@@ -28,9 +56,11 @@ for ( var i = 0; i < req.requestHeaders.length; i++){
       req.requestHeaders[i].value = "bananen"; //change my browser
       return {requestHeaders:req.requestHeaders};
     }
-    if (req.requestHeaders[i].value == "cdn.krxd.net" || req.requestHeaders[i].value.includes("google-analytics") || req.requestHeaders[i].value.includes("googletagservice")|| req.requestHeaders[i].value == "www.gstatic.com" || req.requestHeaders[i].value.includes("effectivemeasure")) {
-      console.log("Blocked: " + "header: " + req.requestHeaders[i].name + " value: " + req.requestHeaders[i].value);
-      return {cancel:true};
+    for (var j = 0; j < blacklist.length; j++) {
+      if (req.requestHeaders[i].value.includes(blacklist[j])) {
+        console.log("Blocked: " + "header: " + req.requestHeaders[i].name + " value: " + req.requestHeaders[i].value);
+        return {cancel:true};
+      }
     }
 }
 
@@ -38,7 +68,11 @@ for ( var i = 0; i < req.requestHeaders.length; i++){
 
 }
 
+function onError(error) {
+  console.log(`Error: ${error}`);
+}
 
+init();
 // no need to change the following, it just makes sure that the above function is called whenever the browser wants to fetch a file
 browser.webRequest.onBeforeSendHeaders.addListener(
   onrequest,
