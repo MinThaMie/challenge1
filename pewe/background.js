@@ -56,6 +56,7 @@ for ( var i = 0; i < req.requestHeaders.length; i++){
       req.requestHeaders[i].value = "bananen"; //change my browser
       return {requestHeaders:req.requestHeaders};
     }
+    var blacklist = get_blacklist();
     for (var j = 0; j < blacklist.length; j++) {
       if (req.requestHeaders[i].value.includes(blacklist[j])) {
         console.log("Blocked: " + "header: " + req.requestHeaders[i].name + " value: " + req.requestHeaders[i].value);
