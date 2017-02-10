@@ -27,7 +27,16 @@ function saveOptions(e) {
 
 function removeItem(e){
   e.preventDefault();
-  console.log("Removed");
+  var blacklist = JSON.parse(localStorage.getItem('blacklist'));
+  var removeItem = getItem($(this).parent().html())
+  blacklist.splice(blacklist.indexOf(removeItem), 1);
+  localStorage.setItem('blacklist', JSON.stringify(blacklist));
+  $(this).parent().remove();
+}
+
+function getItem(html){
+  items = html.split("<");
+  return items[0];
 }
 
 function restoreOptions() {
