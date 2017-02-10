@@ -1,14 +1,31 @@
+var undoItem;
+
 function init() {
   var blacklist = JSON.parse(localStorage.getItem('blacklist'));
   for (var i = 0; i<blacklist.length; i++){
     var elem = $('<div class="blackListItem">'+ blacklist[i]+'</div>');
-    var button = $('<button type="remove">x</button>');
+    var button = $('<button class="btn btn-danger btn-sm" type="click">x</button>');
     button.on('click', removeItem);
     elem.append(button);
 
     $('#blacklist').append(elem);
   }
 
+}
+
+$('#undo').click(unDoRemove)
+
+function unDoRemove(){
+  var blacklist = JSON.parse(localStorage.getItem('blacklist'));
+  if (blacklist.indexOf(undoItem) == -1) {
+    blacklist.push(undoItem);
+    localStorage.setItem('blacklist', JSON.stringify(blacklist));
+    var elem = $('<div class="blackListItem">'+ undoItem+'</div>');
+    var button = $('<button class="btn btn-danger btn-sm" type="click">x</button>');
+    button.on('click', removeItem);
+    elem.append(button);
+    $('#blacklist').append(elem);
+  }
 }
 
 function saveOptions(e) {
@@ -18,7 +35,7 @@ function saveOptions(e) {
   localStorage.setItem('blacklist', JSON.stringify(blacklist));
 
   var elem = $('<div class="blackListItem">'+$('#item').val()+'</div>');
-  var button = $('<button type="remove">x</button>');
+  var button = $('<button class="removeButton" type="remove">x</button>');
   button.on('click', removeItem);
   elem.append(button);
 
@@ -28,7 +45,8 @@ function saveOptions(e) {
 function removeItem(e){
   e.preventDefault();
   var blacklist = JSON.parse(localStorage.getItem('blacklist'));
-  var removeItem = getItem($(this).parent().html())
+  var removeItem = getItem($(this).parent().html());
+  undoItem = removeItem;
   blacklist.splice(blacklist.indexOf(removeItem), 1);
   localStorage.setItem('blacklist', JSON.stringify(blacklist));
   $(this).parent().remove();
@@ -36,6 +54,7 @@ function removeItem(e){
 
 function getItem(html){
   items = html.split("<");
+  console.log(items[0]);
   return items[0];
 }
 
