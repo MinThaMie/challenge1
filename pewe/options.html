@@ -9,13 +9,16 @@
   </head>
 
   <body>
-
-    <form>
-        <label>The site you want to blacklist: <input type="text" id="item" ></label>
-        <button type="submit">Save</button>
-    </form>
-    <div id="blacklist"></div>
-
+    <div class="settings">
+      <div class="inputField">
+        <form>
+            <label>The site you want to blacklist: <input type="text" id="item" ></label>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </form>
+      </div>
+      <div id="blacklist"></div>
+      <button class="btn btn-success" id="undo" type="click">Undo</button>
+    </div>
     <script src="options.js"></script>
 
   </body>
